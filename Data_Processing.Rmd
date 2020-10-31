@@ -1,0 +1,32 @@
+---
+title: "Data_Processing"
+author: ""
+date: "10/31/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+lines <- read.csv('The-Office-Lines-V3.csv')
+```
+
+#Only Brainstorming so far
+
+## Character Proflies
+```{r}
+# How many times they were in scenes
+# Average number of scenes per episode
+# First season/episode appearance
+# Last season/episode appearance
+# How many times did they share a scene with which characters
+# WHat was the sentiment of their lines?
+```
+
+
+## Episode Profiles
+```{r}
+# How many lines does each character have?
+# What's the main topic of the episode?
+# How many times does Michael say 'That's what she said'
+
+```
+
