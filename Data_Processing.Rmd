@@ -19,6 +19,7 @@ lines <- read.csv('The-Office-Lines-V3.csv')
 # Last season/episode appearance
 # How many times did they share a scene with which characters
 # WHat was the sentiment of their lines?
+# How many words in each line
 ```
 
 
