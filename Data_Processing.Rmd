@@ -13,19 +13,19 @@ lines <- read.csv('The-Office-Lines-V3.csv')
 
 ## Character Proflies
 ```{r}
-# How many times they were in scenes
-# Average number of scenes per episode
+# How many times they were in scenes - ER
+# Average number of scenes per episode - ER
 # First season/episode appearance
 # Last season/episode appearance
 # How many times did they share a scene with which characters
 # WHat was the sentiment of their lines?
-# How many words in each line
+# How many words in each line - ER
 ```
 
 
 ## Episode Profiles
 ```{r}
-# How many lines does each character have?
+# How many lines does each character have? - ER
 # What's the main topic of the episode?
 # How many times does Michael say 'That's what she said'
 
