@@ -6,7 +6,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+library(tidyverse)
 lines <- read.csv('The-Office-Lines-V3.csv')
+#Clean Up Character Names, fix casing, remove whitespace, and remove punctuation
+lines$speaker <- str_to_title(tolower(trimws(gsub('[[:punct:]]+', "", lines$speaker))))
+
 ```
 
 #Only Brainstorming so far
@@ -17,9 +21,39 @@ lines <- read.csv('The-Office-Lines-V3.csv')
 # Average number of scenes per episode - ER
 # First season/episode appearance
 # Last season/episode appearance
-# How many times did they share a scene with which characters
-# WHat was the sentiment of their lines?
+
+
 # How many words in each line - ER
+```
+
+
+```{r}
+#Identify main characters
+
+mainCharacters <- lines %>% 
+  group_by(speaker) %>%
+  summarise(line_count = n()) %>%
+  arrange(desc(line_count)) %>%
+  top_n(n = 30, line_count)
+
+
+
+
+# How many times did they share a scene with which characters - GM
+character_selected <- 'Jim'
+
+#characters_wide <-  
+  lines %>% 
+    group_by(season, episode, scene, speaker) %>%
+    summarise(in_scene = TRUE) %>%
+    pivot_wider(id_cols = c('season', 'episode', 'scene'), names_from = speaker, values_from = in_scene, values_fill = FALSE)
+
+lines %>%
+  filter(speaker == character_selected) %>%
+  select(season, episode, scene) %>% 
+  unique()
+
+# WHat is the sentiment of different characters? Does it shift over time? - GM
 ```
 
 
