@@ -21,7 +21,7 @@ lines$speaker <- str_to_title(tolower(trimws(gsub('[[:punct:]]+', "", lines$spea
 sceneCount <- lines %>%
   group_by(season, episode, speaker) %>%
   summarise(SceneCount = n_distinct(scene))
-sceneCount
+sceneCount #test #test #test
 
 # Number of scenes per episode - ER
 SceneCount <- lines %>%
