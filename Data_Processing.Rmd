@@ -18,28 +18,6 @@ lines$speaker <- str_to_title(tolower(trimws(gsub('[[:punct:]]+', "", lines$spea
 
 #Only Brainstorming so far
 
-## Character Proflies
-```{r}
-# How many scenes were the characters in - ER
-sceneCount <- lines %>%
-  group_by(season, episode, speaker) %>%
-  summarise(SceneCount = n_distinct(scene))
-sceneCount #test #test #test
-
-# Number of scenes per episode - ER
-SceneCount <- lines %>%
-  group_by(season, episode) %>%
-  summarise(SceneCount = n_distinct(scene))
-SceneCount
-
-# First season/episode appearance
-# Last season/episode appearance
-
-
-# How many words in each line - ER
-```
-
-
 ```{r}
 #Identify main characters
 
@@ -72,7 +50,6 @@ lines %>%
 
 ## Episode Profiles
 ```{r}
-# How many lines does each character have? - ER
 # What's the main topic of the episode?
 # How many times does Michael say 'That's what she said'
 # test
@@ -126,3 +103,59 @@ ggplot(scatter, aes(x = total_lines.x, y = total_lines.y)) +
 
 
 ```
+
+
+```{r}
+# How many lines does each character have? - ER
+linesperCharacter <- lines %>% 
+  count(speaker, sort = TRUE)
+top10LinesChar <- top_n(linesperCharacter, 10)
+
+ggplot(top10LinesChar, aes(x = reorder(speaker,n), y = n, fill = factor(speaker))) + 
+    stat_summary_bin(fun.y=sum, geom="bar", alpha = .7, position = position_dodge(0.95)) +
+  labs(title = "Which characters had the most lines?") +
+    geom_text(data = top10LinesChar, aes(label = scales::comma(n,2)), size = 3, vjust=1, position = position_dodge(width = 1))+
+    labs(x = "Character", y = "# of Lines") +
+  theme(plot.title = element_text(size = 15, color = "#22292F", face = "bold", hjust = 0.5), panel.background = element_blank(), legend.position = "none", axis.ticks = element_blank()) +
+coord_flip()
+```
+
+```{r}
+# How many scenes were the characters in - ER
+CharSceneCount <- lines %>%
+  group_by(speaker) %>%
+  summarise(SceneCount = n_distinct(scene))
+CharSceneCountSort <- CharSceneCount %>% arrange(desc(SceneCount))
+```
+
+```{r}
+# Average Number of scenes per season - ER
+EpsScnCount <- lines %>%
+  group_by(season) %>%
+  summarise(NumEps = n_distinct(episode), NumScene = n_distinct(scene))
+AvgScnPerEps <- EpsScnCount %>%
+  group_by(season) %>%
+  summarise(AvgScnEps = round(NumScene/NumEps))
+
+gg_dot <- AvgScnPerEps %>%
+  ggplot() +
+  theme_classic() +
+  theme(axis.title = element_text(),axis.ticks.y = element_blank(),axis.line = element_blank(), plot.title = element_text(size = 15, color = "#22292F", face = "bold", hjust = 0.5)) +
+  geom_hline(yintercept = 1:9, col = "grey80") +
+  geom_point(aes(x = AvgScnEps, y = season), size = 11, col = "#9DBEBB") +
+  geom_text(aes(x = AvgScnEps, y = season, label = paste0(AvgScnEps)),col = "black") +
+  scale_x_continuous(breaks = c(40, 50), labels = c("40", "50")) +
+  scale_y_continuous(expand = c(0.2, 0), breaks = c(1,2,3,4,5,6,7,8,9), labels = c("1","2","3","4","5","6","7","8","9"), trans = "reverse") +
+  labs(title = "Average Number of Scenes Per Episode", x = "Avg # Scenes per Episode", y = "Season")
+gg_dot
+```
+
+```{r}
+# How many words in each line - ER
+wordCount <- unnest_tokens(lines, input=line, output=word,
+  format="text", token="words", drop=FALSE, to_lower=TRUE)
+firstGroup <- group_by(wordCount, season, episode, title, scene, speaker, line)
+wordCountperLine <- summarise(firstGroup, length(word))
+head(wordCountperLine)
+```
+
