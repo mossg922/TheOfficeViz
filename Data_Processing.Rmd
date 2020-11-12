@@ -17,8 +17,18 @@ lines$speaker <- str_to_title(tolower(trimws(gsub('[[:punct:]]+', "", lines$spea
 
 ## Character Proflies
 ```{r}
-# How many times they were in scenes - ER
-# Average number of scenes per episode - ER
+# How many scenes were the characters in - ER
+sceneCount <- lines %>%
+  group_by(season, episode, speaker) %>%
+  summarise(SceneCount = n_distinct(scene))
+sceneCount
+
+# Number of scenes per episode - ER
+SceneCount <- lines %>%
+  group_by(season, episode) %>%
+  summarise(SceneCount = n_distinct(scene))
+SceneCount
+
 # First season/episode appearance
 # Last season/episode appearance
 
