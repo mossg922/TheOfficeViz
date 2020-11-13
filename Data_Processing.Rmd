@@ -52,28 +52,19 @@ lines %>%
 ```{r}
 # What's the main topic of the episode?
 # How many times does Michael say 'That's what she said'
-# test
-# test again
+
 ```
 
 
 ## Character Proflies - DM
 ```{r}
-# First season/episode appearance - DM
-# Last season/episode appearance - DM
-# How many times did they share a scene with which characters - DM
-
-
 ## scatter of total lines by character in season 1 vs season 9
-
 lines$count <- 1
 
 episodeSummary <- lines %>% 
   group_by(season, episode, speaker) %>% 
   summarize(total_lines = sum(count)) %>%
   filter(speaker != 'Michael')
-
-
 
 #average lines per episode of season
 s1 <- episodeSummary %>% 
@@ -103,6 +94,22 @@ ggplot(scatter, aes(x = total_lines.x, y = total_lines.y)) +
 
 
 ```
+
+```{r}
+# How many times does Michael say 'That's what she said'
+
+character_selected <- 'Michael'
+
+sheSaid <- lines %>%
+            filter(speaker == character_selected) %>%  
+            select(season, line) 
+
+count <- grepl("|what she said|", lines$line)
+
+
+```
+
+
 
 
 ```{r}
