@@ -72,7 +72,7 @@ s1 <- episodeSummary %>%
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
 
-s9 <- episodeSummary %>% group_by( speaker) %>% 
+s9 <- episodeSummary %>% 
   filter( season == 9) %>% 
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
@@ -96,15 +96,27 @@ ggplot(scatter, aes(x = total_lines.x, y = total_lines.y)) +
 ```
 
 ```{r}
-# How many times does Michael say 'That's what she said'
+# total lines over each season/episode (maybe make character a filter on dashboard?) - DM
 
-character_selected <- 'Michael'
+topChar <- lines %>% count(speaker, sort = TRUE)
+top10 <- top_n(linesperCharacter, 6)
 
-sheSaid <- lines %>%
-            filter(speaker == character_selected) %>%  
-            select(season, line) 
+totLines <- lines %>%
+            filter(speaker %in% top10$speaker) %>%  
+            group_by(season, speaker) %>% 
+            summarize(total_lines = sum(count)) 
 
-count <- grepl("|what she said|", lines$line)
+ggplot(totLines, aes(x = season, y = total_lines,fill = speaker,group = speaker,color = speaker )) + 
+  geom_line( size = .5) + 
+  labs(title = "Total Lines by Season", subtitle = "", caption = "") + 
+  scale_x_continuous("Season", breaks=c(1,2,3,4,5,6,7,8,9) , expand = c(0, 0)) + 
+  scale_y_continuous("Number of Lines", expand = c(0, 0)) +
+  theme_bw() + 
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor =      element_blank(), axis.line = element_line(colour = "black")) +      theme(plot.title=element_text(size=18, hjust=.5, face="bold", colour="black", vjust=-1)) +
+  theme(plot.subtitle=element_text(size=11, hjust=0.5,  colour="black", vjust=-1)) 
+
+
+#count <- grepl("|what she said|", lines$line)
 
 
 ```
