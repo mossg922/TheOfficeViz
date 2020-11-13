@@ -133,6 +133,31 @@ CharSceneCount <- lines %>%
   group_by(speaker) %>%
   summarise(SceneCount = n_distinct(scene))
 CharSceneCountSort <- CharSceneCount %>% arrange(desc(SceneCount))
+top10ScenesChar <- top_n(CharSceneCountSort, 10)
+
+
+gg_dot <- top10ScenesChar %>%
+  arrange(SceneCount) %>%
+  mutate(speaker = fct_inorder(speaker)) %>%
+  
+  ggplot() +
+  theme_classic() +
+  theme(axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.line = element_blank(),
+        plot.title = element_text(size = 15, color = "#22292F", face = "bold", hjust = 0.5)) +
+  geom_point(aes(x = 12, y = speaker), 
+             size = 0, col = "white") + 
+  geom_hline(yintercept = 1:10, col = "grey80") +
+  geom_point(aes(x = SceneCount, y = speaker), 
+             size = 11, col = "#9DBEBB")+ 
+  geom_text(aes(x = SceneCount, y = speaker, 
+                label = paste0(round(SceneCount, 1))),
+            col = "black") +
+  scale_color_manual(values = c("#9DBEBB"), guide = "none") +
+  scale_y_discrete(expand = c(0.2, 0)) +
+  labs(title = "How Many Scenes Were the Characters In?", x = "Total Scene Count", y = "Characters")
+gg_dot
 ```
 
 ```{r}
@@ -143,18 +168,6 @@ EpsScnCount <- lines %>%
 AvgScnPerEps <- EpsScnCount %>%
   group_by(season) %>%
   summarise(AvgScnEps = round(NumScene/NumEps))
-
-gg_dot <- AvgScnPerEps %>%
-  ggplot() +
-  theme_classic() +
-  theme(axis.title = element_text(),axis.ticks.y = element_blank(),axis.line = element_blank(), plot.title = element_text(size = 15, color = "#22292F", face = "bold", hjust = 0.5)) +
-  geom_hline(yintercept = 1:9, col = "grey80") +
-  geom_point(aes(x = AvgScnEps, y = season), size = 11, col = "#9DBEBB") +
-  geom_text(aes(x = AvgScnEps, y = season, label = paste0(AvgScnEps)),col = "black") +
-  scale_x_continuous(breaks = c(40, 50), labels = c("40", "50")) +
-  scale_y_continuous(expand = c(0.2, 0), breaks = c(1,2,3,4,5,6,7,8,9), labels = c("1","2","3","4","5","6","7","8","9"), trans = "reverse") +
-  labs(title = "Average Number of Scenes Per Episode", x = "Avg # Scenes per Episode", y = "Season")
-gg_dot
 ```
 
 ```{r}
