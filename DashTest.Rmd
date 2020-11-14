@@ -18,7 +18,7 @@ lines <- read.csv('The-Office-Lines-V3.csv')
 lines$speaker <- str_to_title(tolower(trimws(gsub('[[:punct:]]+', "", lines$speaker))))
 
 #Identify main characters
-
+# test
 mainCharacters <- lines %>% 
   group_by(speaker) %>%
   summarise(line_count = n()) %>%
