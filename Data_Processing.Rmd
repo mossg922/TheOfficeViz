@@ -181,6 +181,15 @@ EpsScnCount <- lines %>%
 AvgScnPerEps <- EpsScnCount %>%
   group_by(season) %>%
   summarise(AvgScnEps = round(NumScene/NumEps))
+
+gg_line <- AvgScnPerEps %>%
+  ggplot(aes(season, AvgScnEps)) +
+  geom_line(size = 1.2, aes(color = AvgScnEps)) +
+  geom_point(size = 2.6, aes(color = AvgScnEps), shape = 15) +
+  labs(title = "Average Number of Scenes Per Season", x = "Season", y = "Avg # of Scenes") +
+  scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9), labels = c("1", "2", "3", "4", "5", "6", "7", "8", "9")) +
+  theme(plot.title = element_text(size = 15, color = "#22292F", face = "bold", hjust = 0.5), panel.background = element_blank(), legend.position = "none", axis.ticks = element_blank())
+gg_line
 ```
 
 ```{r}
