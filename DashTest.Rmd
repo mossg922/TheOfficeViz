@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "The Office Dashboard"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -44,6 +44,9 @@ lines %>%
 
 
 ```
+
+Characters {data-icon="fa-globe"}
+===
 
 Column {data-width=650}
 -----------------------------------------------------------------------
