@@ -177,6 +177,7 @@ gg_dot
 EpsScnCount <- lines %>%
   group_by(season) %>%
   summarise(NumEps = n_distinct(episode), NumScene = n_distinct(scene))
+
 AvgScnPerEps <- EpsScnCount %>%
   group_by(season) %>%
   summarise(AvgScnEps = round(NumScene/NumEps))
