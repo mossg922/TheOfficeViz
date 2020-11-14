@@ -45,7 +45,7 @@ lines %>%
 
 ```
 
-Characters {data-icon="fa-globe"}
+Characters {data-icon="fa-user-friends"}
 ===
 
 Column {data-width=650}
@@ -110,7 +110,7 @@ Column {data-width=350}
 ```
 
 
-Seasons {data-icon="fa-globe"}
+Seasons {data-icon="fa-tv"}
 ===
 
 Column {data-width=650}
