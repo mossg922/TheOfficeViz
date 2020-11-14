@@ -67,24 +67,35 @@ lines %>%
 ## scatter of total lines by character in season 1 vs season 9
 lines$count <- 1
 
+seasonStart <- 1 #make filter
+seasonEnd <- 9   #make filter
+
+topChar <- lines %>% 
+    filter(season %in% c(seasonStart, seasonEnd)) %>%
+    count(speaker, sort = TRUE)
+    
+top <- top_n(topChar, 20)
+
 episodeSummary <- lines %>% 
   group_by(season, episode, speaker) %>% 
   summarize(total_lines = sum(count)) %>%
-  filter(speaker != 'Michael')
+  filter(speaker %in% top$speaker)
+
+
 
 #average lines per episode of season
-s1 <- episodeSummary %>% 
+sStart <- episodeSummary %>% 
   filter( season == 1) %>%
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
 
-s9 <- episodeSummary %>% 
+sEnd <- episodeSummary %>% 
   filter( season == 9) %>% 
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
 
 
-scatter <- merge(s1,s9, by.x = 'speaker', by.y = 'speaker',all=FALSE) 
+scatter <- merge(sStart,sEnd, by.x = 'speaker', by.y = 'speaker',all=FALSE) 
 lineMax <- max(scatter$total_lines.x, scatter$total_lines.y)+1
 
 ggplot(scatter, aes(x = total_lines.x, y = total_lines.y)) + 
@@ -111,11 +122,11 @@ topChar <- lines %>%
     count(speaker, sort = TRUE) %>%
     filter(season == selectedSeason)
 
-top10 <- top_n(linesperCharacter, 5)
+top <- top_n(topChar, 5)
 
 totLines <- lines %>%
             filter(season == selectedSeason) %>%  
-            filter(speaker %in% top10$speaker) %>% 
+            filter(speaker %in% top$speaker) %>% 
             group_by(season, speaker, episode) %>% 
             summarize(total_lines = sum(count)) 
 
