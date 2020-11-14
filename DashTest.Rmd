@@ -56,28 +56,71 @@ Column {data-width=650}
 ```{r}
 
 
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+Seasons {data-icon="fa-tv"}
+===
+
+### Chart A
+
+```{r}
 
 ## scatter of total lines by character in season 1 vs season 9
 lines$count <- 1
 
+seasonStart <- 1 #make filter
+seasonEnd <- 9   #make filter
+
+topChar <- lines %>% 
+    filter(season %in% c(seasonStart, seasonEnd)) %>%
+    count(speaker, sort = TRUE)
+    
+top <- top_n(topChar, 20)
+
 episodeSummary <- lines %>% 
   group_by(season, episode, speaker) %>% 
   summarize(total_lines = sum(count)) %>%
-  filter(speaker != 'Michael')
+  filter(speaker %in% top$speaker)
+
+
 
 #average lines per episode of season
-s1 <- episodeSummary %>% 
+sStart <- episodeSummary %>% 
   filter( season == 1) %>%
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
 
-s9 <- episodeSummary %>% 
+sEnd <- episodeSummary %>% 
   filter( season == 9) %>% 
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
 
 
-scatter <- merge(s1,s9, by.x = 'speaker', by.y = 'speaker',all=FALSE) 
+scatter <- merge(sStart,sEnd, by.x = 'speaker', by.y = 'speaker',all=FALSE) 
 lineMax <- max(scatter$total_lines.x, scatter$total_lines.y)+1
 
 ggplot(scatter, aes(x = total_lines.x, y = total_lines.y)) + 
@@ -101,6 +144,35 @@ Column {data-width=350}
 
 ```{r}
 
+#season filter
+selectedSeason <- 1
+
+topChar <- lines %>% 
+    filter(season == selectedSeason) %>%
+    count(speaker, sort = TRUE) 
+    
+
+top <- top_n(topChar, 5)
+
+totLines <- lines %>%
+            filter(season == selectedSeason) %>%  
+            filter(speaker %in% top$speaker) %>% 
+            group_by(season, speaker, episode) %>% 
+            summarize(total_lines = sum(count)) 
+
+totLines$SeasonEpisode <- paste(totLines$season, ":", totLines$episode) #get rid of space 
+
+ggplot(totLines, aes(x = SeasonEpisode, y = total_lines,fill = speaker,group = speaker,color = speaker )) + 
+  geom_line( size = .5) + 
+  labs(title = "Total Lines by Season", subtitle = "", caption = "") + 
+  #scale_x_continuous("Season", breaks=c(1,2,3,4,5,6,7,8,9) , expand = c(0, 0)) + 
+  scale_x_discrete("Season - Episode") +
+  scale_y_continuous("Number of Lines", expand = c(0, 0)) +
+  theme_bw() + 
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor =      element_blank(), axis.line = element_line(colour = "black")) +      theme(plot.title=element_text(size=18, hjust=.5, face="bold", colour="black", vjust=-1)) +
+  theme(plot.subtitle=element_text(size=11, hjust=0.5,  colour="black", vjust=-1)) 
+
+
 ```
 
 ### Chart C
@@ -108,12 +180,3 @@ Column {data-width=350}
 ```{r}
 
 ```
-
-
-Seasons {data-icon="fa-tv"}
-===
-
-Column {data-width=650}
------------------------------------------------------------------------
-
-### Chart D

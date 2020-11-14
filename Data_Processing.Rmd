@@ -28,7 +28,7 @@ lines$speaker <- str_to_title(tolower(trimws(gsub('[[:punct:]]+', "", lines$spea
 
 ```{r}
 #Identify main characters
-
+#test
 mainCharacters <- lines %>% 
   group_by(speaker) %>%
   summarise(line_count = n()) %>%
@@ -67,24 +67,35 @@ lines %>%
 ## scatter of total lines by character in season 1 vs season 9
 lines$count <- 1
 
+seasonStart <- 1 #make filter
+seasonEnd <- 9   #make filter
+
+topChar <- lines %>% 
+    filter(season %in% c(seasonStart, seasonEnd)) %>%
+    count(speaker, sort = TRUE)
+    
+top <- top_n(topChar, 20)
+
 episodeSummary <- lines %>% 
   group_by(season, episode, speaker) %>% 
   summarize(total_lines = sum(count)) %>%
-  filter(speaker != 'Michael')
+  filter(speaker %in% top$speaker)
+
+
 
 #average lines per episode of season
-s1 <- episodeSummary %>% 
+sStart <- episodeSummary %>% 
   filter( season == 1) %>%
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
 
-s9 <- episodeSummary %>% 
+sEnd <- episodeSummary %>% 
   filter( season == 9) %>% 
   group_by(speaker) %>% 
   summarize(total_lines = mean(total_lines)) 
 
 
-scatter <- merge(s1,s9, by.x = 'speaker', by.y = 'speaker',all=FALSE) 
+scatter <- merge(sStart,sEnd, by.x = 'speaker', by.y = 'speaker',all=FALSE) 
 lineMax <- max(scatter$total_lines.x, scatter$total_lines.y)+1
 
 ggplot(scatter, aes(x = total_lines.x, y = total_lines.y)) + 
@@ -103,19 +114,29 @@ ggplot(scatter, aes(x = total_lines.x, y = total_lines.y)) +
 
 ```{r}
 # total lines over each season/episode (maybe make character a filter on dashboard?) - DM
+#season filter
 
-topChar <- lines %>% count(speaker, sort = TRUE)
-top10 <- top_n(linesperCharacter, 6)
+selectedSeason <- 1
+
+topChar <- lines %>% 
+    count(speaker, sort = TRUE) %>%
+    filter(season == selectedSeason)
+
+top <- top_n(topChar, 5)
 
 totLines <- lines %>%
-            filter(speaker %in% top10$speaker) %>%  
-            group_by(season, speaker) %>% 
+            filter(season == selectedSeason) %>%  
+            filter(speaker %in% top$speaker) %>% 
+            group_by(season, speaker, episode) %>% 
             summarize(total_lines = sum(count)) 
 
-ggplot(totLines, aes(x = season, y = total_lines,fill = speaker,group = speaker,color = speaker )) + 
+totLines$SeasonEpisode <- paste(totLines$season, ":", totLines$episode) #get rid of space 
+
+ggplot(totLines, aes(x = SeasonEpisode, y = total_lines,fill = speaker,group = speaker,color = speaker )) + 
   geom_line( size = .5) + 
   labs(title = "Total Lines by Season", subtitle = "", caption = "") + 
-  scale_x_continuous("Season", breaks=c(1,2,3,4,5,6,7,8,9) , expand = c(0, 0)) + 
+  #scale_x_continuous("Season", breaks=c(1,2,3,4,5,6,7,8,9) , expand = c(0, 0)) + 
+  scale_x_discrete("Season - Episode") +
   scale_y_continuous("Number of Lines", expand = c(0, 0)) +
   theme_bw() + 
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor =      element_blank(), axis.line = element_line(colour = "black")) +      theme(plot.title=element_text(size=18, hjust=.5, face="bold", colour="black", vjust=-1)) +
