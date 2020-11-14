@@ -109,3 +109,11 @@ Column {data-width=350}
 
 ```
 
+
+Seasons {data-icon="fa-globe"}
+===
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart D
