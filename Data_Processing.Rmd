@@ -49,7 +49,7 @@ lines %>%
   filter(speaker == character_selected) %>%
   select(season, episode, scene) %>% 
   unique()
-
+#test
 # WHat is the sentiment of different characters? Does it shift over time? - GM
 ```
 
