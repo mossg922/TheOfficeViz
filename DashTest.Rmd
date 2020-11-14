@@ -145,12 +145,12 @@ Column {data-width=350}
 ```{r}
 
 #season filter
-
 selectedSeason <- 1
 
 topChar <- lines %>% 
-    count(speaker, sort = TRUE) %>%
-    filter(season == selectedSeason)
+    filter(season == selectedSeason) %>%
+    count(speaker, sort = TRUE) 
+    
 
 top <- top_n(topChar, 5)
 
@@ -171,7 +171,6 @@ ggplot(totLines, aes(x = SeasonEpisode, y = total_lines,fill = speaker,group = s
   theme_bw() + 
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor =      element_blank(), axis.line = element_line(colour = "black")) +      theme(plot.title=element_text(size=18, hjust=.5, face="bold", colour="black", vjust=-1)) +
   theme(plot.subtitle=element_text(size=11, hjust=0.5,  colour="black", vjust=-1)) 
-
 
 
 ```
