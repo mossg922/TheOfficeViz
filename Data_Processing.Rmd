@@ -10,9 +10,17 @@ library(dplyr)
 library(ggplot2)
 library(tidyverse)
 library(ggrepel)
+install.packages('flexdashboard')
+library(flexdashboard)
+
 lines <- read.csv('The-Office-Lines-V3.csv')
 #Clean Up Character Names, fix casing, remove whitespace, and remove punctuation
 lines$speaker <- str_to_title(tolower(trimws(gsub('[[:punct:]]+', "", lines$speaker))))
+#lines$
+# change Michel to Michael
+
+#brainstorm more ideas
+# lets have something about how the show is different before and after Michael leaves
 
 ```
 
@@ -26,8 +34,6 @@ mainCharacters <- lines %>%
   summarise(line_count = n()) %>%
   arrange(desc(line_count)) %>%
   top_n(n = 30, line_count)
-
-
 
 
 # How many times did they share a scene with which characters - GM
